@@ -4,30 +4,31 @@ function Challenge({title, targetTime}) {
     const [timeRemaining, setTimeRemaining] = useState(targetTime * 1000);
     let timer = useRef()
     let dialog = useRef()
-
     const timeIsActive = timeRemaining > 0 && timeRemaining < targetTime * 1000;
    
     if(timeRemaining <= 0){
       clearInterval(timer.current)
-      setTimeRemaining(targetTime * 1000);
       dialog.current.open();
+    }
+
+    function handleReset(){
+      setTimeRemaining(targetTime * 1000);
     }
 
     function HandleStart(){
       timer.current = setInterval(()=>{
-        setTimeRemaining(prevtimeRemaining => prevtimeRemaining-10)
+        console.log(timer.current)          
+        setTimeRemaining(prevtimeRemaining => prevtimeRemaining - 10)
       }, 10)
     }
 
     function HandleStop(){
       dialog.current.open();
-      timeIsActive = 0;
-      clearTimeout(timer.current)
-
+      clearInterval(timer.current)
     }
   return (
     <>
-      <ResultModal ref={dialog} targetSeconds={targetTime} Result="lost"/>
+      <ResultModal ref={dialog} targetSeconds={targetTime} timeRemain={timeRemaining} reset={handleReset}/>
       <div className='challenge'>
         <div>{title}</div>
         <p className='challenge-time'>
